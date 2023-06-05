@@ -1,7 +1,7 @@
 ---
 title: 'Activity: Popular Names'
-author: "YOUR NAME HERE"
-date: "DUE DATE"
+author: "Alex Su"
+date: "6/5/2023"
 output:
   html_document:
     df_print: paged
@@ -39,7 +39,7 @@ library(esquisse)
 # Load the BabyNames data into RStudio environment (from dcData package)
 data("BabyNames", package = "dcData")
 ```
-
+data("BabyNames", package = "dcData")
 # Activity
 
 **Goal**: By the end of the activity, each team will create a graph (like Figure A.1 on p 159) showing ups and downs in the popularity of the names at your table according to the U.S. social security registry.  
@@ -56,6 +56,19 @@ My answer here....
 ```{r}
 ## Look at the data a few different ways (see Ch 9 for more).
 
+# Assuming the dataset is already loaded into a variable called "baby_names"
+
+# View the first few rows of the dataset
+head(BabyNames)
+
+#structure of the dataset
+data("BabyNames")
+str(BabyNames)
+
+# What variables?
+name year gender Count
+# what is a case=
+a specific baby name, including the year, gender, and count of births for that name.
 
 ```
 
@@ -68,34 +81,45 @@ My answer here....
 
 ##### What variable(s) from the raw data table do not appear at all in the graph?
 
-My answer here.... 
+Sex and year 
 
 ##### What variable(s) in the graph are similar to corresponding variables in the raw data table, but might have been transformed in some way?
 
-My answer here.... 
+count
 
 
 ### Step 4
 
 ##### Have cases been filtered out?
 
-My answer here.... 
+Yes, focuses on specific country
 
 
 ##### Have cases been grouped and summarized within groups in any way?
 
-My answer here.... 
+Yes, table could have grouped the data by name, sex, and year,
 
 
 ##### Have any new variables been introduced?  If so, what the relationship between the new variables and existing variables?
 
-My answer here.... 
+proportion
 
 
 ### Step 5
 
 
 Using the BabyNames data set, filter the data to display just the 5 names that you picked.  Then group the cases by year and name, and count how many total births per year were recorded for each of the names (regardless of sex).  
+
+library(dplyr)
+
+filtered_data <- BabyNames %>%
+  filter(name %in% c("Emma", "Olivia", "Noah", "Liam", "Sophia"))
+  
+grouped_data <- filtered_data %>%
+  group_by(year, name)
+  
+summary_data <- grouped_data %>%
+  summarise(total_births = sum(count))
 
 
 ### Step 6
@@ -106,6 +130,34 @@ Using the BabyNames data set, filter the data to display just the 5 names that y
 
 ```{r}
 ## Create my glyph ready data set here
+
+library(dplyr)
+library(ggplot2)
+
+
+filtered_data <- BabyNames %>%
+  filter(name %in% c("Emma", "Olivia", "Noah", "Liam", "Sophia"))
+
+
+grouped_data <- filtered_data %>%
+  group_by(year, name)
+
+
+summary_data <- grouped_data %>%
+  summarise(total_births = sum(count))
+
+
+glyph_ready_data <- as.data.frame(summary_data)
+
+
+glyph_plot <- glyph_ready_data %>%
+  ggplot(aes(x = year, y = total, group = name)) +
+  geom_line(size = 1, alpha = 0.5, aes(color = name)) +
+  ylab("Popularity") +
+  xlab("Year")
+
+# Step 6: Display the graphic
+print(glyph_plot)
 
 
 # inspect the result
